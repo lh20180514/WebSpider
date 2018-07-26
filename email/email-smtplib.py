@@ -21,7 +21,7 @@ def send_mail(mail_recv_list, subject, content):
         return False
 
 if __name__ == '__main__':
-    mail_recv_list = '381792254@qq.com'
+    mail_recv_list = 'liuh2018@xjtu.edu.cn'
     subject = '这是python自动发送的邮件'
     content = '这是邮件的测试内容'
     if send_mail(mail_recv_list,subject,content):
