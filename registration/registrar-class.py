@@ -1,11 +1,12 @@
 import requests
 import json
-import copy
 import time
+import schedule
+import datetime
 
 class Registrar:
     headers = {
-        'Connection': 'keep - alive',  # 保持链接状态
+        'Connection': 'keep-alive',  # 保持链接状态
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
         }
 
@@ -50,6 +51,7 @@ class Registrar:
 
     # 准备挂号的数据：医生、时间、病人
     def constructionRegistrationData(self):
+        print(str(datetime.datetime.now()))
         # registrar = {'ClinicDate': '2018-07-30', 'TimePartType': 0, 'Status': 1, 'ClinicLabelId': '6101000210003322', 'ClinicLabelType': 1, 'RsvModel': 1, 'BookedNums': 15, 'CountLimit': 30}
         registrationData = {}
         registrar = self.getRegistrarId()
@@ -105,6 +107,7 @@ class Registrar:
                 print("没有找到挂号的病人")
         else:
             print('constructionRegistrationData 请求错误: ' + response.text)
+        print(registrationData)
         return registrationData
 
     #开始发起挂号请求
@@ -142,16 +145,21 @@ if __name__ == '__main__':
 
     doctorId = r'6101000210003003'
     patienter = r'刘若熙'
-    cookieStr = r'__RequestVerificationToken=64TGmcVMXnI--UxgGh5mK4QCmxsRlh7TBPjoeaIXlllknmbY916toJW5NRwkpRWN9H8Kn4xtP-4cu-FSpYRe5YbpiiUOsMB6CcPhnhEkZfo1; ' \
-                r'ASP.NET_SessionId=drnw1myaweyjaf4j1tudmxbm; ' \
-                r'User=UserName=lh8229238&Password=lh301415926; ' \
-                r'HBHOSPITALCODE=5912'
+    cookieStr = r'__RequestVerificationToken=64TGmcVMXnI--UxgGh5mK4QCmxsRlh7TBPjoeaIXlllknmbY916toJW5NRwkpRWN9H8Kn4xtP-4cu-FSpYRe5YbpiiUOsMB6CcPhnhEkZfo1;' \
+                r' ASP.NET_SessionId=drnw1myaweyjaf4j1tudmxbm;' \
+                r' User=UserName=lh8229238&Password=lh301415926;' \
+                r' HBHOSPITALCODE=8016'
     registrar = Registrar(doctorId, patienter, cookieStr)
     # print(registrar.getRegistrarId())
-    # print(json.dumps(registrar.constructionRegistrationData())
-    registrar.startRegistration()
 
-    end = time.clock()
-    print('main Running time: %s Seconds' % (end - start))
+    schedule.every(90).seconds.do(registrar.constructionRegistrationData)
+    while True:
+        schedule.run_pending()
+
+    # print(registrar.constructionRegistrationData())
+    # registrar.startRegistration()
+
+    # end = time.clock()
+    # print('main Running time: %s Seconds' % (end - start))
 
 
